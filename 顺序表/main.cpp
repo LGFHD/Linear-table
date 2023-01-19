@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-using namespace std;
 
+/*
 // 静态实现
 #define MaxSize 10
 
@@ -40,8 +40,9 @@ bool ListDelete(SqList& L, int i, int& e) {
     return true;
 }
 //
+*/
 
-/*动态实现
+//********************动态实现
 #define InitSize 10
 
 typedef struct {
@@ -50,9 +51,56 @@ typedef struct {
     int length;
 }SqList;
 
+//动态实现：：函数声明
+void InitList(SqList& L);
+void IncreaseSize(SqList& L, int len);
+bool ListInsert(SqList& L, int i, int e);
+bool ListDelete(SqList& L, int i, int& e);
+int  LocateElem(SqList& L, int e);//按值查找，返回位序
+
+//********************动态实现
+
+
+int main() {
+    SqList L;
+    InitList(L);
+
+    //赋初值
+    for (int i = 0; i <= 5; i++) {
+        L.data[i] = i + 1;
+        L.length = i;
+    }
+    for (int i = 0; i < L.length; i++) {//不能用 i<MaxSize ；只要输出数组已有的数据，数据个数是数组长度
+        printf("data[%d]=%d\n", i, L.data[i]);
+    }
+    printf("长度是%d\n", L.length);
+
+    //删除
+    int e = -1;
+    if (ListDelete(L, 3, e)) {
+        printf("删除的是%d\n", e);
+    }
+    else {
+        printf( "位序不合法\n" );
+    }
+    printf("删除后长度是%d\n", L.length);
+
+    //插入
+    ListInsert(L, 3, 10);
+    printf("插入10\n");
+    for (int i = 0; i < L.length; i++) {//不能用 i<MaxSize ；只要输出数组已有的数据，数据个数是数组长度
+        printf("data[%d]=%d\n", i, L.data[i]);
+    }
+    printf("插入后长度是%d\n", L.length);
+
+    return 0;
+
+}
+
+//动态实现：：函数定义
 void InitList(SqList& L) {
     //malloc申请一片连续的存储空间
-    L.data = (int*)malloc(InitSize*(sizeof(int)));//初始化之后，L.data指向的是数组？
+    L.data = (int*)malloc(InitSize * (sizeof(int)));//初始化之后，L.data指向的是数组？
     L.length = 0;
     L.MaxSize = InitSize;
 }
@@ -90,40 +138,7 @@ bool ListDelete(SqList& L, int i, int& e) {
     L.length--;
     return true;
 }
-动态实现*/
 
 
-int main() {
-    SqList L;
-    InitList(L);
+//动态实现
 
-    //赋初值
-    for (int i = 0; i <= 5; i++) {
-        L.data[i] = i + 1;
-        L.length = i;
-    }
-    for (int i = 0; i < L.length; i++) {//不能用 i<MaxSize ；只要输出数组已有的数据，数据个数是数组长度
-        printf("data[%d]=%d\n", i, L.data[i]);
-    }
-    cout << "长度是" << L.length << endl;
-
-    //删除
-    int e = -1;
-    if (ListDelete(L, 3, e)) {
-        cout << "删除的是" << e << endl;
-    }
-    else {
-        cout << "位序不合法" << endl;
-    }
-    cout << "删除后长度是" << L.length << endl;
-
-    //插入
-    ListInsert(L, 3, 10);
-    for (int i = 0; i < L.length; i++) {//不能用 i<MaxSize ；只要输出数组已有的数据，数据个数是数组长度
-        printf("data[%d]=%d\n", i, L.data[i]);
-    }
-    cout << "插入后长度是" << L.length << endl;
-
-    return 0;
-
-}
