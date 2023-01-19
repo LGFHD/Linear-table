@@ -56,6 +56,7 @@ void InitList(SqList& L);
 void IncreaseSize(SqList& L, int len);
 bool ListInsert(SqList& L, int i, int e);
 bool ListDelete(SqList& L, int i, int& e);
+int GetElem(SqList& L, int i);//按位查找，返回值
 int  LocateElem(SqList& L, int e);//按值查找，返回位序
 
 //********************动态实现
@@ -93,6 +94,9 @@ int main() {
     }
     printf("插入后长度是%d\n", L.length);
 
+    //查找
+    printf("第三位是 %d\n",GetElem(L, 3));
+    printf("值为4的是第%d位\n", LocateElem(L, 4));
     return 0;
 
 }
@@ -139,6 +143,19 @@ bool ListDelete(SqList& L, int i, int& e) {
     return true;
 }
 
+//按位查找，返回值
+int GetElem(SqList& L, int i) {
+    return L.data[i-1];
+}
+
+//按值查找，返回位序
+int  LocateElem(SqList& L, int e) {
+    for (int i = 0; i < L.length; i++) {
+        if (L.data[i] == e)//L.data是指向一个数组，使用时要用 L.data[i]
+            return i + 1;
+    }
+    return 0;            //退出循环，说明查找失败（需要返回的是位序，位序没有0）
+}
 
 //动态实现
 
