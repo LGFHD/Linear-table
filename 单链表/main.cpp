@@ -9,8 +9,8 @@ typedef int ElemType;
 typedef struct LNode { //定义 “单链表结点” 类型
 	ElemType data;    //数据域：每个结点存放一个数据元素
 	struct LNode* next;//指针域：指针指向下一个结点
-}LNode, *LinkList;
- 
+}LNode, * LinkList;
+
 //函数声明（LinkList  与 LNode* 等价，前者强调这是单链表，后者强调这是一个结点）
 LinkList List_HeadInsert(LinkList& L);
 LNode* GetElem(LinkList L, int i);
@@ -133,9 +133,9 @@ bool InsertNextNode(LNode* p, ElemType e) {
 /*
 bool ListInsert(LinkList& L, int i,ElemType e) {
 	if (i < 1) {	//输入的位序不合法
-		return false;	
+		return false;
 	}
-		//*************************这一部分代码：找到第 i-1 个结点****************				
+		//*************************这一部分代码：找到第 i-1 个结点****************
 		LNode* p;	//指针p指向当前扫描到的结点
 		int j = 0;	//j 记录当前 p 指向的第几个结点
 		p = L;		//（指针里面存的是表示地址的数据，也就是指针自己“指向”的地方，将L赋给p）
@@ -153,7 +153,7 @@ bool ListInsert(LinkList& L, int i,ElemType e) {
 		s->data = e;
 		s->next = p->next;
 		p->next = s;	//将结点 s 连接到 p 之后
-	
+
 	return true;	//插入成功
 }
 */
@@ -198,7 +198,7 @@ LNode* LocateElem(LinkList L, ElemType e) {
 
 
 //在 p 结点之前插入元素 e
-bool InsertPriorNode_e( LNode* p, ElemType e) {
+bool InsertPriorNode_e(LNode* p, ElemType e) {
 	if (p == NULL) {
 		return false;
 	}
@@ -221,12 +221,12 @@ bool InsertPriorNode_s(LNode* p, LNode* s) {
 	p->next = s;	//	s 连到 p 之后
 	ElemType temp = p->data;	//开始交换数据
 	p->data == s->data;
-	s->data = temp;		
+	s->data = temp;
 	return true;
 }
-	
+
 //删除第 i 个结点，并返回删除的值（找到第 i-1 个结点，将其指向第 i+1 个结点）
-bool ListDelete(LinkList& L, int i,ElemType &e) {
+bool ListDelete(LinkList& L, int i, ElemType& e) {
 	if (i < 1) {
 		return false;
 	}
@@ -246,7 +246,7 @@ bool ListDelete(LinkList& L, int i,ElemType &e) {
 	LNode* q = p->next;		//令 q 指向被删除的结点
 	e = q->data;			//用 e 返回删除元素的值
 	p->next = p->next->next;//断开 q 结点
-	free(q);				
+	free(q);
 	return true;
 }
 
@@ -259,7 +259,7 @@ bool DeleteNode(LNode* p) {
 	LNode* q = p->next;		//令 q 指向 p 的后继结点 (如果 p 是最后一个结点，只能从第一个结点开始依次寻找 p 的前驱)
 	p->data = p->next->data;// p 的后继结点 q 的数据复制到 p 结点中,p 和 q 中数据一致（p 是要删除的，p 中数据直接覆盖就好了）
 	p->next = q->next;		//将 q 结点从中断开（此时 q 中的数据已经复制到 p 中，这时直接删除 q 就可）
-	/*是否可以将上面三步化为下面两步	
+	/*是否可以将上面三步化为下面两步
 	p->data = p->next->data;
 	p->next=p->next->next;
 	*/
