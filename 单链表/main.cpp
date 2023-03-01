@@ -18,6 +18,7 @@ LNode* LocateElem(LinkList L, ElemType e);
 bool ListInsert(LinkList& L, int i, ElemType e);
 bool InsertNextNode(LNode* p, ElemType e);
 bool ListInsert(LinkList& L, int i, ElemType e);
+int Length(LinkList L);
 
 int main()
 {
@@ -114,22 +115,43 @@ bool Empty(LinkList L) {
 	}
 }
 
-//在 p 结点之后插入元素 e
-bool InsertNextNode(LNode* p, ElemType e) {
-	if (p == NULL) {
-		return false;
+//按位查找
+LNode* GetElem(LinkList L, int i) {
+	if (i < 0) {
+		return NULL;
 	}
-	LNode* s = (LNode*)malloc(sizeof(LNode));
-	if (s == NULL) {	// 内存分配失败
-		return false;
+	int j = 0;	//当前  p 指向的是第几个结点
+	LNode* p;	//指向当前扫描到的结点
+	p = L;		//指向头结点，头节点是第0个结点，不存数据
+	while (p != NULL && j < i) {	//循环找到第 i 个结点
+		p = p->next;
+		j++;
 	}
-	s->data = e;	//结点s保存数据e
-	s->next = p->next;
-	p->next = s;
-	return true;
+	return p;
 }
 
-//在第 i 个位置插入元素 e(未利用函数InsertNextNode)（找到第 i-1 结点，在它后面插入）
+//按值查找（如何判断两个结构体是否相等）
+LNode* LocateElem(LinkList L, ElemType e) {
+	LNode* p = L->next;
+	//从第一个结点开始查找数据域为 e 的结点
+	while (p != NULL && p->data != e) {
+		p = p->next;
+	}
+	return p;	//找到后返回指针 p ，否则返回NULL
+}
+
+//求表长
+int Length(LinkList L) {
+	int len = 0;
+	LNode* p = L;
+	while (p->next != NULL) {
+		p = p->next;
+		len++;
+	}
+	return len;
+}
+
+//在第 i 个位置插入元素 e(未调用函数)（找到第 i-1 结点，在它后面插入）
 /*
 bool ListInsert(LinkList& L, int i,ElemType e) {
 	if (i < 1) {	//输入的位序不合法
@@ -158,44 +180,30 @@ bool ListInsert(LinkList& L, int i,ElemType e) {
 }
 */
 
-//在第 i 个位置插入元素 e（利用函数InsertNextNode，更简洁）（找到第 i-1 结点，在它后面插入）
+//在第 i 个位置插入元素 e（调用函数，更简洁）（找到第 i-1 结点，在它后面插入）
 bool ListInsert(LinkList& L, int i, ElemType e) {
 	if (i < 1) {	//输入的位序不合法						
 		return false;
 	}
-	LNode* p;	//指针p指向当前扫描到的结点
-	int j = 0;
-	p = L;
-	while (p != NULL && j < i - 1) {
-		p = p->next;
-		j++;
-	}
-	return InsertNextNode(p, e);
+	LNode* p = GetElem(L, i - 1);	//调用函数找到第 i-1 个结点，如果 i 值不合法，则会返回NULL
+	return InsertNextNode(p, e);	//若 i 值不合法，输入到InsertNextNode中的 p 就是NULL
 }
 
-
-//
-LNode* GetElem(LinkList L, int i) {
-	if (i < 1) {
-		return NULL;
+//在 p 结点之后插入元素 e
+bool InsertNextNode(LNode* p, ElemType e) {
+	if (p == NULL) {		//这里判空是有必要的!
+		//例如：在ListInsert函数中，若输入的 i 值不合法，GetElem函数会返回NULL，此时InsertNextNode就会收到值为NULL的 p 
+		return false;
 	}
-	int j = 1;
-	LNode* p = L->next;
-	while (p != NULL && j < i) {
-		p = p->next;
-		j++;
+	LNode* s = (LNode*)malloc(sizeof(LNode));
+	if (s == NULL) {	// 内存分配失败
+		return false;
 	}
-	return p;
+	s->data = e;	//结点s保存数据e
+	s->next = p->next;
+	p->next = s;
+	return true;
 }
-
-LNode* LocateElem(LinkList L, ElemType e) {
-	LNode* p = L->next;
-	while (p != NULL && p->data == e) {
-		p = p->next;
-	}
-	return p;
-}
-
 
 //在 p 结点之前插入元素 e
 bool InsertPriorNode_e(LNode* p, ElemType e) {
@@ -230,14 +238,15 @@ bool ListDelete(LinkList& L, int i, ElemType& e) {
 	if (i < 1) {
 		return false;
 	}
-	int j = 0;
+	/*int j = 0;	//找到第i-1个结点
 	LNode* p;
 	p = L;
 	while (p != NULL && j < i - 1) {
 		p = p->next;
 		j++;
-	}
-	if (p == NULL) {
+	}*/
+	LNode* p = GetElem(L, i - 1);
+	if (p == NULL) {			
 		return false;
 	}
 	if (p->next == NULL) {	//第 i-1 个结点之后已无其他结点
@@ -249,7 +258,6 @@ bool ListDelete(LinkList& L, int i, ElemType& e) {
 	free(q);
 	return true;
 }
-
 
 //删除指定结点 p
 bool DeleteNode(LNode* p) {
