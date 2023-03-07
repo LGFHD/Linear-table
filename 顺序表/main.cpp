@@ -1,6 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-//include <iostream>
+#include <iostream>
+using namespace std;
 
 /*
 // 静态实现
@@ -43,24 +42,26 @@ bool ListDelete(SqList& L, int i, int& e) {
 */
 
 //********************动态实现
-#define InitSize 10
+#define InitSize 10     //设置数组初始大小
+typedef int ElemType;
 
 typedef struct {
-    int* data;
+    ElemType* data;
     int MaxSize;
     int length;
 }SqList;
 
 //动态实现：：函数声明
 void InitList(SqList& L);
-void IncreaseSize(SqList& L, int len);
+void IncreaseSize(SqList& L, int len);      //增加顺序表的长度
 bool ListInsert(SqList& L, int i, int e);
 bool ListDelete(SqList& L, int i, int& e);
 int GetElem(SqList& L, int i);//按位查找，返回值
 int  LocateElem(SqList& L, int e);//按值查找，返回位序
+bool deleteMin(SqList& L, ElemType& value);
+void Reverse(SqList& L);
 
 //********************动态实现
-
 
 int main() {
     SqList L;
@@ -76,35 +77,51 @@ int main() {
     }
     printf("长度是%d\n", L.length);
 
-    //删除
-    int e = -1;
-    if (ListDelete(L, 3, e)) {
-        printf("删除的是%d\n", e);
-    }
-    else {
-        printf( "位序不合法\n" );
-    }
-    printf("删除后长度是%d\n", L.length);
-
-    //插入
-    ListInsert(L, 3, 10);
-    printf("插入10\n");
+     //题目一：删除最小
+      /*int value;
+        deleteMin(L, value);
+        cout << value << endl;*/
+    
+    Reverse(L);
     for (int i = 0; i < L.length; i++) {//不能用 i<MaxSize ；只要输出数组已有的数据，数据个数是数组长度
         printf("data[%d]=%d\n", i, L.data[i]);
     }
-    printf("插入后长度是%d\n", L.length);
-
-    //查找
-    printf("第三位是 %d\n",GetElem(L, 3));
-    printf("值为4的是第%d位\n", LocateElem(L, 4));
+    printf("长度是%d\n", L.length);
     return 0;
+}
 
+//删除最小值的元素并返回该值，空出的位置由最后一个元素代替
+bool deleteMin(SqList& L, ElemType &value) {
+    if (L.length == 0) {
+        return false;
+    }
+    value = L.data[0];
+    int pos = 0;
+    for (int i = 1; i < L.length; i++) {
+        if (L.data[i] < value) {
+            value = L.data[i];
+            pos = i;
+        }
+    }
+    L.data[pos] = L.data[L.length - 1];
+    L.length--;
+    return true;
+}
+
+//高效代码转置数组，空间复杂度为 O(1)
+void  Reverse(SqList& L) {
+    ElemType temp;
+    for (int i = 0; i < L.length/2; i++) {
+        temp = L.data[i];
+        L.data[i] = L.data[L.length-i-1];   //注意这里的 i 和 L,length-i-1 的关系 
+        L.data[L.length-i-1] = temp;
+    }
 }
 
 //动态实现：：函数定义
 void InitList(SqList& L) {
     //malloc申请一片连续的存储空间
-    L.data = (int*)malloc(InitSize * (sizeof(int)));//初始化之后，L.data指向的是数组？
+    L.data = (int*)malloc(InitSize * (sizeof(int)));//初始化之后，L.data指向申请的内存
     L.length = 0;
     L.MaxSize = InitSize;
 }
