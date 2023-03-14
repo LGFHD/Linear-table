@@ -11,6 +11,7 @@ typedef struct LNode { //定义 “单链表结点” 类型
 
 //函数声明（LinkList  与 LNode* 等价，前者强调这是单链表，后者强调这是一个结点）
 LinkList List_HeadInsert(LinkList& L);
+LinkList List_TailInsert(LinkList& L);
 LNode* GetElem(LinkList L, int i);
 LNode* LocateElem(LinkList L, ElemType e);
 bool ListInsert(LinkList& L, int i, ElemType e);
@@ -20,21 +21,27 @@ int Length(LinkList L);
 
 int main()
 {
-	int A = 65;
+	LinkList L;
+	List_TailInsert(L);
+	for (int i = 0; i < 10; i++) {
+		cout << L->data << endl;
+		L = L->next;
+	}
 	return 0;
 }
 
 
 //函数定义
-
 //头插法建立单链表
 LinkList List_HeadInsert(LinkList& L) {		//逆向建立单链表
 	LNode* s; int x;
-	L = (LinkList)malloc(sizeof(LNode));	//创建头结点
+	L = new LNode;
+//	L = (LinkList)malloc(sizeof(LNode));	//创建头结点
 	L->next=NULL;							//初始为空链表
 	cin >> x;								//输入结点的值
 	while (x != 9999) {						//输入9999代表结束
-		s = (LNode*)malloc(sizeof(LNode));  //创建新结点
+		s = new LNode;
+		//s = (LNode*)malloc(sizeof(LNode));  //创建新结点
 		s->data = x;
 		s->next = L->next;
 		L->next = s;
@@ -42,7 +49,23 @@ LinkList List_HeadInsert(LinkList& L) {		//逆向建立单链表
 	}
 	return L;
 }
-
+//尾插法建立单链表
+LinkList List_TailInsert(LinkList& L) {//正向建立单链表
+	int x;							   //设元素类型为整型
+	L = new LNode;//为头指针申请存储空间
+	LNode* s, * r = L;//r为表尾指针，始终指向表尾；s为接受数据的指针
+	cin >> x;
+	while (x != 9999) {
+		s = new LNode;//申请新空间存储新数据
+		s->data = x;
+		r->next = s;
+	// r 始终指向表尾（初始状态指向头结点），有新的结点插入时，新结点要成为最后一个指针，让r的next指向新结点，使新结点成为最后一个指针
+		r = s;//随后再将r指针表尾结点
+		cin >> x;
+	}
+	r->next = NULL;//尾结点指针置空
+	return L;
+}
 //单链表(无头结点，插入删除第一个元素要更改头指针)
 /*
  //初始化
@@ -93,7 +116,7 @@ bool ListInsert(LinkList& L, int i, ElemType e) {
 //************************************************** 有头结点
 // 一个头结点加四个存储数据的结点，那么该链表长度为 5
 
-//初始化
+//1.初始化
 bool InitList(LinkList& L) {
 	L = (LNode*)malloc(sizeof(LNode));		//分配头结点
 	if (L == NULL) {
@@ -103,7 +126,7 @@ bool InitList(LinkList& L) {
 	return true;
 }
 
-//判空
+//2.判空
 bool Empty(LinkList L) {
 	if (L->next == NULL) {
 		return true;
@@ -113,7 +136,7 @@ bool Empty(LinkList L) {
 	}
 }
 
-//按位查找
+//3.按位查找
 LNode* GetElem(LinkList L, int i) {
 	if (i < 0) {
 		return NULL;
@@ -128,7 +151,7 @@ LNode* GetElem(LinkList L, int i) {
 	return p;
 }
 
-//按值查找（如何判断两个结构体是否相等）
+//4.按值查找（如何判断两个结构体是否相等）
 LNode* LocateElem(LinkList L, ElemType e) {
 	LNode* p = L->next;
 	//从第一个结点开始查找数据域为 e 的结点
@@ -138,7 +161,7 @@ LNode* LocateElem(LinkList L, ElemType e) {
 	return p;	//找到后返回指针 p ，否则返回NULL
 }
 
-//求表长
+//5.求表长
 int Length(LinkList L) {
 	int len = 0;
 	LNode* p = L;
@@ -193,7 +216,8 @@ bool InsertNextNode(LNode* p, ElemType e) {
 		//例如：在ListInsert函数中，若输入的 i 值不合法，GetElem函数会返回NULL，此时InsertNextNode就会收到值为NULL的 p 
 		return false;
 	}
-	LNode* s = (LNode*)malloc(sizeof(LNode));
+	LNode *s = new LNode;
+	//LNode* s = (LNode*)malloc(sizeof(LNode));
 	if (s == NULL) {	// 内存分配失败
 		return false;
 	}
