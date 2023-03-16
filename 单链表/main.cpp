@@ -118,7 +118,8 @@ bool ListInsert(LinkList& L, int i, ElemType e) {
 
 //1.初始化
 bool InitList(LinkList& L) {
-	L = (LNode*)malloc(sizeof(LNode));		//分配头结点
+	L = new LNode;
+	//L = (LNode*)malloc(sizeof(LNode));		//分配头结点
 	if (L == NULL) {
 		return false;						//内存不足，分配失败
 	}
